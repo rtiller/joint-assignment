@@ -19,7 +19,7 @@ public class Basic extends FreeFlowCSP{
             for(int y=0; y<maze.height; y++) 
             {
                 Node cell = maze.coorindates(x, y);
-                if(!cell.visited())
+                if(!cell.visited)
                 {
                 return cell;
                 }

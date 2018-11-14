@@ -58,7 +58,7 @@ public class FreeFlowCSP
             for(int y=0; y<maze.height; y++) 
             {
                 Node cell = maze.coorindates(x, y);
-                if(!cell.visited())
+                if(!cell.visited)
                 {
                 return cell;
                 }
@@ -91,8 +91,8 @@ public class FreeFlowCSP
     public boolean cardinalityConstraint(Node cell) {
         HashMap<Character, Integer> neighborColors = cell.getNeighborColors();
         boolean hasUnassignedNeighbor = neighborColors.containsKey(Node.EmptyCell);
-        boolean isSource = cell.isSource();
-        boolean visited = cell.visited();
+        boolean isSource = cell.start;
+        boolean visited = cell.visited;
 
         if(!visited) return true;
 
@@ -132,7 +132,7 @@ public class FreeFlowCSP
 
     public boolean connectedToSourceConstraint(Node cell) 
     {
-        if(cell.isSource() || !cell.visited()) 
+        if(cell.start || !cell.visited) 
         {
             return true;
         }

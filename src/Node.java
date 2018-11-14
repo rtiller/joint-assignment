@@ -12,7 +12,7 @@ public class Node {
     int y;
     char color;
     boolean start;
-    boolean assigned;
+    boolean visited;
     ArrayList<Node> neighbors;
     ArrayList<Character> domain;
     static char EmptyCell = '_';
@@ -23,7 +23,7 @@ public class Node {
         this.mazeChar = mazeChar;
         this.color = mazeChar;
         this.start = mazeChar != EmptyCell;
-        this.assigned = this.start;
+        this.visited = this.start;
         this.neighbors = new ArrayList<>();
         this.domain = new ArrayList<>();
         
@@ -81,7 +81,7 @@ public class Node {
     {
         for(Node neighbor: neighbors) 
         {
-            if(neighbor.visited()) 
+            if(neighbor.visited) 
             {
                 continue;
             }
@@ -95,8 +95,8 @@ public class Node {
         HashMap<Character, Integer> neighborColors = cell.getNeighborColors();
 
         boolean hasUnassignedNeighbor = neighborColors.containsKey(Node.EmptyCell);
-        boolean isSource = cell.isSource();
-        boolean visited = cell.visited();
+        boolean isSource = cell.start;
+        boolean visited = cell.visited;
 
         if(!visited) return true;
 
@@ -136,7 +136,7 @@ public class Node {
 
     public boolean connectedToSourceConstraint(Node cell) 
     {
-        if(cell.isSource() || !cell.visited()) 
+        if(cell.start || !cell.visited) 
         {
             return true;
         }
@@ -175,17 +175,17 @@ public class Node {
     public void setColor(char color) 
     {
         if(this.start) throw new RuntimeException("Cannot assign a source cell a new color.");
-        if(this.assigned) throw new RuntimeException("Cannot reassign a cell's color without resetting it first.");
+        if(this.visited) throw new RuntimeException("Cannot reassign a cell's color without resetting it first.");
         this.color = color;
-        this.assigned = true;
+        this.visited = true;
     }
 
     public void resetColor() 
     {
         if(this.start) throw new RuntimeException("Cannot reset a source cell's color.");
-        if(!this.assigned) throw new RuntimeException("Cannot unassign a cell's color that has not yet been assigned.");
+        if(!this.visited) throw new RuntimeException("Cannot unassign a cell's color that has not yet been assigned.");
         this.color = mazeChar;
-        this.assigned = false;
+        this.visited = false;
     }
 
     public HashMap<Character, Integer> getNeighborColors() 
@@ -206,21 +206,13 @@ public class Node {
         return colorCounts;
     }
 
-    public boolean isSource() 
-    {
-        return this.start;
-    }
-
-    public boolean visited() 
-    {
-        return this.assigned;
-    }
+    
 
     public boolean isComplete() 
     {
         for(Node neighbor: neighbors) 
         {
-            if(!neighbor.visited()) 
+            if(!neighbor.visited) 
             {
                 return false;
             }

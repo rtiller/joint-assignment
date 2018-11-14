@@ -79,7 +79,7 @@ public class Maze {
             for(int y=0; y<height; y++) 
             {
                 Node cell = grid[y][x];
-                if(!cell.visited()) cell.updateDomain(domain);
+                if(!cell.visited) cell.updateDomain(domain);
             }
         }
         return new Maze(grid, domain);
@@ -96,7 +96,7 @@ public class Maze {
         {
             for(int y=0; y<height; y++) 
             {
-                if(!coorindates(x, y).visited()) 
+                if(!coorindates(x, y).visited) 
                 {
                     return false;
                 }
