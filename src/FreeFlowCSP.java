@@ -96,15 +96,15 @@ public class FreeFlowCSP
 
         if(!visited) return true;
 
-        if(neighborColors.containsKey(cell.getColor())) 
+        if(neighborColors.containsKey(cell.color)) 
         {
-            if(neighborColors.get(cell.getColor()) > 2) return false;
+            if(neighborColors.get(cell.color) > 2) return false;
         }
 
         if(!hasUnassignedNeighbor && visited) 
         {
             // All cells with no unassigned neighbors needs to contain at least one neighbor of the same color...
-            if(!neighborColors.containsKey(cell.getColor()))
+            if(!neighborColors.containsKey(cell.color))
             {
                 return false;
             }
@@ -112,7 +112,7 @@ public class FreeFlowCSP
             // If the cell is a source, it should have specifically one neighbor of the same color.
             if(isSource) 
             {
-                if(neighborColors.get(cell.getColor()) != 1) 
+                if(neighborColors.get(cell.color) != 1) 
                 {
                     return false;
                 }
@@ -120,7 +120,7 @@ public class FreeFlowCSP
             } 
             else 
             {
-                if(neighborColors.get(cell.getColor()) != 2) 
+                if(neighborColors.get(cell.color) != 2) 
                 {
                     return false;
                 }
@@ -146,15 +146,15 @@ public class FreeFlowCSP
         {
             return true;
         }
-        if(neighborColors.containsKey(cell.getColor())) 
+        if(neighborColors.containsKey(cell.color)) 
         {
             return true;
         }
         visited.add(cell);
 
-        for(Node neighbor: cell.getNeighbors()) 
+        for(Node neighbor: cell.neighbors) 
         {
-            if(neighbor.getColor() == cell.getColor() && !visited.contains(neighbor)) 
+            if(neighbor.color == cell.color && !visited.contains(neighbor)) 
             {
                 if(hasPathToSource(neighbor, visited)) 
                 {

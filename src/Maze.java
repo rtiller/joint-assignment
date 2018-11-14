@@ -113,7 +113,7 @@ public class Maze {
         {
             for(Node cell: row) 
             {
-                builder.append(cell.getColor());
+                builder.append(cell.color);
             }
             builder.append("\n");
         }
