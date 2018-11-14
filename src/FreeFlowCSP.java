@@ -96,38 +96,60 @@ public class FreeFlowCSP
 
         if(!visited) return true;
 
-        if(neighborColors.containsKey(cell.getColor())) {
+        if(neighborColors.containsKey(cell.getColor())) 
+        {
             if(neighborColors.get(cell.getColor()) > 2) return false;
         }
 
-        if(!hasUnassignedNeighbor && visited) {
+        if(!hasUnassignedNeighbor && visited) 
+        {
             // All cells with no unassigned neighbors needs to contain at least one neighbor of the same color...
-            if(!neighborColors.containsKey(cell.getColor())) return false;
+            if(!neighborColors.containsKey(cell.getColor()))
+            {
+                return false;
+            }
 
             // If the cell is a source, it should have specifically one neighbor of the same color.
             if(isSource) 
             {
-                if(neighborColors.get(cell.getColor()) != 1) return false;
+                if(neighborColors.get(cell.getColor()) != 1) 
+                {
+                    return false;
+                }
                 // If the cell is not a source but is assigned, it should have exactly two neighbors with the same color.
             } 
             else 
             {
-                if(neighborColors.get(cell.getColor()) != 2) return false;
+                if(neighborColors.get(cell.getColor()) != 2) 
+                {
+                    return false;
+                }
             }
         }
         // Otherwise, all cardinality constraints have been met.
         return true;
     }
 
-    public boolean connectedToSourceConstraint(Node cell) {
-        if(cell.isSource() || !cell.visited()) return true;
+    public boolean connectedToSourceConstraint(Node cell) 
+    {
+        if(cell.isSource() || !cell.visited()) 
+        {
+            return true;
+        }
         return hasPathToSource(cell, new ArrayList<>());
     }
 
-    private boolean hasPathToSource(Node cell, ArrayList<Node> visited) {
+    private boolean hasPathToSource(Node cell, ArrayList<Node> visited) 
+    {
         HashMap<Character, Integer> neighborColors = cell.getNeighborColors();
-        if(neighborColors.containsKey(Node.EmptyCell)) return true;
-        if(neighborColors.containsKey(cell.getColor())) return true;
+        if(neighborColors.containsKey(Node.EmptyCell)) 
+        {
+            return true;
+        }
+        if(neighborColors.containsKey(cell.getColor())) 
+        {
+            return true;
+        }
         visited.add(cell);
 
         for(Node neighbor: cell.getNeighbors()) 
