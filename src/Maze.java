@@ -29,11 +29,13 @@ public class Maze {
 
 
 
-    public static Maze createFromInput(Scanner input, int width, int height) {
+    public static Maze createFromInput(Scanner input, int width, int height) 
+    {
         Node[][] grid = new Node[height][width];
         ArrayList<Character> domain = new ArrayList<>();
 
-        for(int row=0; row<height; row++) {
+        for(int row=0; row<height; row++) 
+        {
             // Extract line of input as array of characters (values/non-value).
             char[] line = input.nextLine().toCharArray();
 
@@ -58,10 +60,6 @@ public class Maze {
             }
         }
 
-
-
-        // Now assign neighbors
-
         for(int x=0; x<width; x++) 
         {
             for(int y=0; y<height; y++) 
@@ -81,39 +79,24 @@ public class Maze {
             for(int y=0; y<height; y++) 
             {
                 Node cell = grid[y][x];
-                if(!cell.isAssigned()) cell.updateDomain(domain);
+                if(!cell.visited()) cell.updateDomain(domain);
             }
         }
         return new Maze(grid, domain);
     }
 
-    public Node getCell(int x, int y) 
+    public Node coorindates(int x, int y) 
     {
         return this.maze[y][x];
     }
 
-    public int getWidth() 
-    {
-        return this.width;
-    }
-
-    public int getHeight() 
-    {
-        return this.height;
-    }
-
-    public ArrayList<Character> getDomain() 
-    {
-        return this.domain;
-    }
-
-    public boolean isComplete() 
+    public boolean completed() 
     {
         for(int x=0; x<width; x++) 
         {
             for(int y=0; y<height; y++) 
             {
-                if(!getCell(x, y).isAssigned()) 
+                if(!coorindates(x, y).visited()) 
                 {
                     return false;
                 }

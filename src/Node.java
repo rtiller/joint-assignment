@@ -68,7 +68,7 @@ public class Node {
 
     public void updateNeighborDomains(ArrayList<Character> fullDomain) {
         for(Node neighbor: getNeighbors()) {
-            if(neighbor.isAssigned()) continue;
+            if(neighbor.visited()) continue;
             neighbor.updateDomain(fullDomain);
         }
     }
@@ -78,7 +78,7 @@ public class Node {
 
         boolean hasUnassignedNeighbor = neighborColors.containsKey(Node.EmptyCell);
         boolean isSource = cell.isSource();
-        boolean isAssigned = cell.isAssigned();
+        boolean isAssigned = cell.visited();
 
         if(!isAssigned) return true;
 
@@ -104,7 +104,7 @@ public class Node {
     }
 
     public boolean connectedToSourceConstraint(Node cell) {
-        if(cell.isSource() || !cell.isAssigned()) return true;
+        if(cell.isSource() || !cell.visited()) return true;
         return hasPathToSource(cell, new ArrayList<>());
     }
 
@@ -175,13 +175,13 @@ public class Node {
         return this.start;
     }
 
-    public boolean isAssigned() {
+    public boolean visited() {
         return this.assigned;
     }
 
     public boolean isComplete() {
         for(Node neighbor: neighbors) {
-            if(!neighbor.isAssigned()) return false;
+            if(!neighbor.visited()) return false;
         }
         return true;
     }

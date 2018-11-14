@@ -18,8 +18,8 @@ public class Basic extends FreeFlowCSP{
         {
             for(int y=0; y<maze.height; y++) 
             {
-                Node cell = maze.getCell(x, y);
-                if(!cell.isAssigned())
+                Node cell = maze.coorindates(x, y);
+                if(!cell.visited())
                 {
                 return cell;
                 }
@@ -32,7 +32,7 @@ public class Basic extends FreeFlowCSP{
     @Override
     public Maze solveMaze() 
     {
-        if(maze.isComplete()) 
+        if(maze.completed()) 
         {
             return maze;
         }

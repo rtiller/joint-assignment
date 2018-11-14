@@ -21,7 +21,7 @@ public class FreeFlowCSP
     
     public Maze solveMaze() 
     {
-        if(maze.isComplete()) 
+        if(maze.completed()) 
         {
             return maze;
         }
@@ -57,8 +57,8 @@ public class FreeFlowCSP
         {
             for(int y=0; y<maze.height; y++) 
             {
-                Node cell = maze.getCell(x, y);
-                if(!cell.isAssigned())
+                Node cell = maze.coorindates(x, y);
+                if(!cell.visited())
                 {
                 return cell;
                 }
@@ -74,7 +74,7 @@ public class FreeFlowCSP
         {
             for(int y=0; y<maze.height; y++) 
             {
-                Node cell = maze.getCell(x, y);
+                Node cell = maze.coorindates(x, y);
                 if(!cardinalityConstraint(cell)) 
                 {
                     return false;
@@ -92,15 +92,15 @@ public class FreeFlowCSP
         HashMap<Character, Integer> neighborColors = cell.getNeighborColors();
         boolean hasUnassignedNeighbor = neighborColors.containsKey(Node.EmptyCell);
         boolean isSource = cell.isSource();
-        boolean isAssigned = cell.isAssigned();
+        boolean visited = cell.visited();
 
-        if(!isAssigned) return true;
+        if(!visited) return true;
 
         if(neighborColors.containsKey(cell.getColor())) {
             if(neighborColors.get(cell.getColor()) > 2) return false;
         }
 
-        if(!hasUnassignedNeighbor && isAssigned) {
+        if(!hasUnassignedNeighbor && visited) {
             // All cells with no unassigned neighbors needs to contain at least one neighbor of the same color...
             if(!neighborColors.containsKey(cell.getColor())) return false;
 
@@ -120,7 +120,7 @@ public class FreeFlowCSP
     }
 
     public boolean connectedToSourceConstraint(Node cell) {
-        if(cell.isSource() || !cell.isAssigned()) return true;
+        if(cell.isSource() || !cell.visited()) return true;
         return hasPathToSource(cell, new ArrayList<>());
     }
 
