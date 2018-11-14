@@ -57,7 +57,7 @@ public class FreeFlowCSP
         {
             for(int y=0; y<maze.height; y++) 
             {
-                Node cell = maze.coorindates(x, y);
+                Node cell = maze.coordinates(x, y);
                 if(!cell.visited)
                 {
                 return cell;
@@ -74,7 +74,7 @@ public class FreeFlowCSP
         {
             for(int y=0; y<maze.height; y++) 
             {
-                Node cell = maze.coorindates(x, y);
+                Node cell = maze.coordinates(x, y);
                 if(!cardinalityConstraint(cell)) 
                 {
                     return false;

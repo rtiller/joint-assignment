@@ -85,7 +85,7 @@ public class Maze {
         return new Maze(grid, domain);
     }
 
-    public Node coorindates(int x, int y) 
+    public Node coordinates(int x, int y) 
     {
         return this.maze[y][x];
     }
@@ -96,7 +96,7 @@ public class Maze {
         {
             for(int y=0; y<height; y++) 
             {
-                if(!coorindates(x, y).visited) 
+                if(!coordinates(x, y).visited) 
                 {
                     return false;
                 }
