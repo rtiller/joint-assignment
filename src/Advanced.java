@@ -16,9 +16,9 @@ public class Advanced extends FreeFlowCSP
     @Override
     public Node pickNode() 
     {
-        Node mostConstrainedCell = null;
-        int mostConstrainedLevel = Integer.MAX_VALUE;
-
+        
+        int constraintByLevel = Integer.MAX_VALUE;
+        Node cellConstraint = null;
         for(int i=0; i<maze.width; i++) 
         {
             for(int j=0; j<maze.height; j++) 
@@ -42,14 +42,14 @@ public class Advanced extends FreeFlowCSP
                 }
 
                 int level = cell.domain.size();
-                if(level < mostConstrainedLevel) 
+                if(level < constraintByLevel) 
                 {
-                    mostConstrainedCell = cell;
-                    mostConstrainedLevel = level;
+                    cellConstraint = cell;
+                    constraintByLevel = level;
                 }
             }
         }
-        return mostConstrainedCell;
+        return cellConstraint;
     }
     
     @Override
