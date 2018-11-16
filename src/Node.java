@@ -47,7 +47,7 @@ public class Node {
     public void updateDomain(ArrayList<Character> fullDomain) 
     {
         domain.clear();
-        HashMap<Character, Integer> colorCounts = getNeighborColors();
+        HashMap<Character, Integer> colorCounts = neighborColor();
         ArrayList<Character> neighborColors = new ArrayList<>();
 
         neighborColors.addAll(colorCounts.keySet());
@@ -92,7 +92,7 @@ public class Node {
 
     public boolean cardinalityConstraint(Node cell) 
     {
-        HashMap<Character, Integer> neighborColors = cell.getNeighborColors();
+        HashMap<Character, Integer> neighborColors = cell.neighborColor();
 
         boolean hasUnassignedNeighbor = neighborColors.containsKey(Node.EmptyCell);
         boolean isSource = cell.start;
@@ -145,7 +145,7 @@ public class Node {
 
     private boolean hasPathToSource(Node cell, ArrayList<Node> visited) 
     {
-        HashMap<Character, Integer> neighborColors = cell.getNeighborColors();
+        HashMap<Character, Integer> neighborColors = cell.neighborColor();
         if(neighborColors.containsKey(Node.EmptyCell)) 
         {
             return true;
@@ -188,7 +188,7 @@ public class Node {
         this.visited = false;
     }
 
-    public HashMap<Character, Integer> getNeighborColors() 
+    public HashMap<Character, Integer> neighborColor() 
     {
         HashMap<Character, Integer> colorCounts = new HashMap<>();
         for(Node neighbor: neighbors) 

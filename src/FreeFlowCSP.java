@@ -26,7 +26,7 @@ public class FreeFlowCSP
             return maze;
         }
         
-        Node temp = getNode();
+        Node temp = pickNode();
         
         for(char value: temp.domain) 
         {
@@ -51,13 +51,13 @@ public class FreeFlowCSP
         return null;
     }
     
-     public Node getNode() 
+     public Node pickNode() 
     {
-        for(int x=0; x<maze.width; x++) 
+        for(int i=0; i<maze.width; i++) 
         {
-            for(int y=0; y<maze.height; y++) 
+            for(int j=0; j<maze.height; j++) 
             {
-                Node cell = maze.coordinates(x, y);
+                Node cell = maze.coordinates(i, j);
                 if(!cell.visited)
                 {
                 return cell;
@@ -70,16 +70,16 @@ public class FreeFlowCSP
     
     public boolean mazeConstraints() 
     {
-        for(int x=0; x<maze.width; x++) 
+        for(int i=0; i<maze.width; i++) 
         {
-            for(int y=0; y<maze.height; y++) 
+            for(int j=0; j<maze.height; j++) 
             {
-                Node cell = maze.coordinates(x, y);
-                if(!cardinalityConstraint(cell)) 
+                Node cell = maze.coordinates(i, j);
+                if(!constraints(cell)) 
                 {
                     return false;
                 }
-                if(!connectedToSourceConstraint(cell)) 
+                if(!sourceConstraints(cell)) 
                 {
                     return false;
                 }
@@ -88,10 +88,12 @@ public class FreeFlowCSP
         return true;
     }
 
-    public boolean cardinalityConstraint(Node cell) {
-        HashMap<Character, Integer> neighborColors = cell.getNeighborColors();
-        boolean hasUnassignedNeighbor = neighborColors.containsKey(Node.EmptyCell);
+    public boolean constraints(Node cell) 
+    {
+        HashMap<Character, Integer> neighborColors = cell.neighborColor();
+        
         boolean isSource = cell.start;
+        boolean noNeighborAssignment = neighborColors.containsKey(Node.EmptyCell);
         boolean visited = cell.visited;
 
         if(!visited) return true;
@@ -101,7 +103,7 @@ public class FreeFlowCSP
             if(neighborColors.get(cell.color) > 2) return false;
         }
 
-        if(!hasUnassignedNeighbor && visited) 
+        if(!noNeighborAssignment && visited) 
         {
             // All cells with no unassigned neighbors needs to contain at least one neighbor of the same color...
             if(!neighborColors.containsKey(cell.color))
@@ -130,23 +132,23 @@ public class FreeFlowCSP
         return true;
     }
 
-    public boolean connectedToSourceConstraint(Node cell) 
+    public boolean sourceConstraints(Node cell) 
     {
         if(cell.start || !cell.visited) 
         {
             return true;
         }
-        return hasPathToSource(cell, new ArrayList<>());
+        return path(cell, new ArrayList<>());
     }
 
-    private boolean hasPathToSource(Node cell, ArrayList<Node> visited) 
+    private boolean path(Node cell, ArrayList<Node> visited) 
     {
-        HashMap<Character, Integer> neighborColors = cell.getNeighborColors();
-        if(neighborColors.containsKey(Node.EmptyCell)) 
+        HashMap<Character, Integer> colorComparison = cell.neighborColor();
+        if(colorComparison.containsKey(Node.EmptyCell)) 
         {
             return true;
         }
-        if(neighborColors.containsKey(cell.color)) 
+        if(colorComparison.containsKey(cell.color)) 
         {
             return true;
         }
@@ -156,7 +158,7 @@ public class FreeFlowCSP
         {
             if(neighbor.color == cell.color && !visited.contains(neighbor)) 
             {
-                if(hasPathToSource(neighbor, visited)) 
+                if(path(neighbor, visited)) 
                 {
                     return true;
                 }

@@ -1,123 +1,86 @@
-
-import java.io.File;
-import java.util.List;
-import java.util.Scanner;
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * CSCI 446 A.I.
+ * Completed by: Robert Tiller, Kyle Ungersma, Jason Armstrong, Beau Anderson
  */
 
-/**
- *
- * @author rtill
- */
-public class Advanced extends FreeFlowCSP{
+
+public class Advanced extends FreeFlowCSP
+{
     
-    public Advanced(Maze maze) {
-
+    public Advanced(Maze maze) 
+    {
         super(maze);
-
     }
 
-
-
+    
     @Override
-
-    public Maze solveMaze() {
-
-        if(maze.completed()) return maze;
-
-        Node var = getNode();
-
-
-
-        for(char value: var.domain) {
-
-            var.setColor(value);
-
-            if(mazeConstraints()) {
-
-
-
-                Maze result = solveMaze();
-
-                if(result != null) return result;
-
-                var.resetColor();
-
-            } else {
-
-                var.resetColor();
-
-            }
-
-        }
-
-        return null;
-
-    }
-
-
-
-    @Override
-
-    public Node getNode() {
-
+    public Node pickNode() 
+    {
         Node mostConstrainedCell = null;
-
         int mostConstrainedLevel = Integer.MAX_VALUE;
 
-
-
-
-
-        for(int x=0; x<maze.width; x++) {
-
-            for(int y=0; y<maze.height; y++) {
-
-                Node cell = maze.coordinates(x, y);
-
-                if(!cell.visited) cell.updateDomain(domain);
-
+        for(int i=0; i<maze.width; i++) 
+        {
+            for(int j=0; j<maze.height; j++) 
+            {
+                Node cell = maze.coordinates(i, j);
+                if(!cell.visited) 
+                {
+                    cell.updateDomain(domain);
+                }
             }
-
         }
 
-
-
-        for(int x=0; x<maze.width; x++) {
-
-            for(int y=0; y<maze.height; y++) {
-
-                Node cell = maze.coordinates(x, y);
-
-                if(cell.visited) continue;
-
-
-
-                int level = cell.domain.size();
-
-
-
-                if(level < mostConstrainedLevel) {
-
-                    mostConstrainedCell = cell;
-
-                    mostConstrainedLevel = level;
-
+        for(int i=0; i<maze.width; i++) 
+        {
+            for(int j=0; j<maze.height; j++) 
+            {
+                Node cell = maze.coordinates(i, j);
+                if(cell.visited) 
+                {
+                    continue;
                 }
 
+                int level = cell.domain.size();
+                if(level < mostConstrainedLevel) 
+                {
+                    mostConstrainedCell = cell;
+                    mostConstrainedLevel = level;
+                }
             }
-
+        }
+        return mostConstrainedCell;
+    }
+    
+    @Override
+    public Maze solveMaze() 
+    {
+        if(maze.completed()) 
+        {
+            return maze;
         }
 
-        return mostConstrainedCell;
+        Node temp = pickNode();
 
+        for(char value: temp.domain) 
+        {
+            temp.setColor(value);
+            if(mazeConstraints()) 
+            {
+                Maze result = solveMaze();
+                if(result != null) 
+                {
+                    return result;
+                }
+                temp.resetColor();
+            } 
+            else 
+            {
+                temp.resetColor();
+            }
+        }
+        return null;
     }
 
-    
- 
     
 }

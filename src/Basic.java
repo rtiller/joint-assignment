@@ -12,13 +12,13 @@ public class Basic extends FreeFlowCSP{
     }
     
     @Override
-     public Node getNode() 
+     public Node pickNode() 
     {
-        for(int x=0; x<maze.width; x++) 
+        for(int i=0; i<maze.width; i++) 
         {
-            for(int y=0; y<maze.height; y++) 
+            for(int j=0; j<maze.height; j++) 
             {
-                Node cell = maze.coordinates(x, y);
+                Node cell = maze.coordinates(i, j);
                 if(!cell.visited)
                 {
                 return cell;
@@ -37,7 +37,7 @@ public class Basic extends FreeFlowCSP{
             return maze;
         }
         
-        Node temp = getNode();
+        Node temp = pickNode();
         
         for(char value: temp.domain) 
         {

@@ -74,11 +74,11 @@ public class Maze {
         }
 
         // Now update domains
-        for(int x=0; x<width; x++) 
+        for(int i=0; i<width; i++) 
         {
-            for(int y=0; y<height; y++) 
+            for(int j=0; j<height; j++) 
             {
-                Node cell = grid[y][x];
+                Node cell = grid[j][i];
                 if(!cell.visited) cell.updateDomain(domain);
             }
         }
@@ -92,11 +92,11 @@ public class Maze {
 
     public boolean completed() 
     {
-        for(int x=0; x<width; x++) 
+        for(int i=0; i<width; i++) 
         {
-            for(int y=0; y<height; y++) 
+            for(int j=0; j<height; j++) 
             {
-                if(!coordinates(x, y).visited) 
+                if(!coordinates(i, j).visited) 
                 {
                     return false;
                 }
