@@ -1,3 +1,7 @@
+/*
+ * CSCI 446 A.I.
+ * Completed by: Robert Tiller, Kyle Ungersma, Jason Armstrong, Beau Anderson
+ */
 
 import java.io.File;
 import java.util.Scanner;
