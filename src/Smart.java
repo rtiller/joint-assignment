@@ -7,43 +7,40 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FreeFlowCSP
+public class Smart
 {
- 
-    protected final Maze maze;
-    protected final ArrayList<Character> domain;
-
-    public FreeFlowCSP(Maze mazeIn) 
+    
+    public Maze maze;
+    public ArrayList<Character> domain;
+    
+    public Smart(Maze mazeIn)
     {
         maze = mazeIn;
         domain = mazeIn.domain;
     }
     
-    public Maze solveMaze() 
+    public Maze solveMaze()
     {
-        if(maze.completed()) 
+        if(maze.isFilled())
         {
             return maze;
         }
         
         Node temp = pickNode();
         
-        for(char value: temp.domain) 
+        for(char value: temp.domain)
         {
-            
             temp.setColor(value);
-            
-            if(mazeConstraints()) 
+            if(mazeConstraints())
             {
-                System.out.println(maze+"\n");
                 Maze result = solveMaze();
-                if(result != null) 
+                if(result != null)
                 {
                     return result;
                 }
                 temp.resetColor();
-            } 
-            else 
+            }
+            else
             {
                 temp.resetColor();
             }
@@ -51,35 +48,57 @@ public class FreeFlowCSP
         return null;
     }
     
-     public Node pickNode() 
+    public Node pickNode()
     {
-        for(int i=0; i<maze.width; i++) 
+        Node mostConstrainedCell = null;
+        int mostConstrainedLevel = Integer.MAX_VALUE;
+        
+        for(int i=0; i<maze.width; i++)
         {
-            for(int j=0; j<maze.height; j++) 
+            for(int j=0; j<maze.height; j++)
             {
-                Node cell = maze.coordinates(i, j);
+                Node cell = maze.getNode(i, j);
                 if(!cell.visited)
                 {
-                return cell;
+                    cell.updateDomain(domain);
                 }
             }
         }
-        return null;
-    }
-   
-    
-    public boolean mazeConstraints() 
-    {
-        for(int i=0; i<maze.width; i++) 
+        
+        for(int i=0; i<maze.width; i++)
         {
-            for(int j=0; j<maze.height; j++) 
+            for(int j=0; j<maze.height; j++)
             {
-                Node cell = maze.coordinates(i, j);
-                if(!constraints(cell)) 
+                Node cell = maze.getNode(i, j);
+                if(cell.visited)
+                {
+                    continue;
+                }
+                
+                int level = cell.domain.size();
+                if(level < mostConstrainedLevel)
+                {
+                    mostConstrainedCell = cell;
+                    mostConstrainedLevel = level;
+                }
+            }
+        }
+        return mostConstrainedCell;
+    }
+    
+    
+    public boolean mazeConstraints()
+    {
+        for(int i=0; i<maze.width; i++)
+        {
+            for(int j=0; j<maze.height; j++)
+            {
+                Node cell = maze.getNode(i, j);
+                if(!constraints(cell))
                 {
                     return false;
                 }
-                if(!sourceConstraints(cell)) 
+                if(!sourceConstraints(cell))
                 {
                     return false;
                 }
@@ -87,42 +106,42 @@ public class FreeFlowCSP
         }
         return true;
     }
-
-    public boolean constraints(Node cell) 
+    
+    public boolean constraints(Node cell)
     {
         HashMap<Character, Integer> neighborColors = cell.neighborColor();
         
         boolean isSource = cell.start;
         boolean noNeighborAssignment = neighborColors.containsKey(Node.EmptyCell);
         boolean visited = cell.visited;
-
+        
         if(!visited) return true;
-
-        if(neighborColors.containsKey(cell.color)) 
+        
+        if(neighborColors.containsKey(cell.color))
         {
             if(neighborColors.get(cell.color) > 2) return false;
         }
-
-        if(!noNeighborAssignment && visited) 
+        
+        if(!noNeighborAssignment && visited)
         {
             // All cells with no unassigned neighbors needs to contain at least one neighbor of the same color...
             if(!neighborColors.containsKey(cell.color))
             {
                 return false;
             }
-
+            
             // If the cell is a source, it should have specifically one neighbor of the same color.
-            if(isSource) 
+            if(isSource)
             {
-                if(neighborColors.get(cell.color) != 1) 
+                if(neighborColors.get(cell.color) != 1)
                 {
                     return false;
                 }
                 // If the cell is not a source but is assigned, it should have exactly two neighbors with the same color.
-            } 
-            else 
+            }
+            else
             {
-                if(neighborColors.get(cell.color) != 2) 
+                if(neighborColors.get(cell.color) != 2)
                 {
                     return false;
                 }
@@ -131,34 +150,34 @@ public class FreeFlowCSP
         // Otherwise, all cardinality constraints have been met.
         return true;
     }
-
-    public boolean sourceConstraints(Node cell) 
+    
+    public boolean sourceConstraints(Node cell)
     {
-        if(cell.start || !cell.visited) 
+        if(cell.start || !cell.visited)
         {
             return true;
         }
         return path(cell, new ArrayList<>());
     }
-
-    private boolean path(Node cell, ArrayList<Node> visited) 
+    
+    private boolean path(Node cell, ArrayList<Node> visited)
     {
         HashMap<Character, Integer> colorComparison = cell.neighborColor();
-        if(colorComparison.containsKey(Node.EmptyCell)) 
+        if(colorComparison.containsKey(Node.EmptyCell))
         {
             return true;
         }
-        if(colorComparison.containsKey(cell.color)) 
+        if(colorComparison.containsKey(cell.color))
         {
             return true;
         }
         visited.add(cell);
-
-        for(Node neighbor: cell.neighbors) 
+        
+        for(Node neighbor: cell.neighbors)
         {
-            if(neighbor.color == cell.color && !visited.contains(neighbor)) 
+            if(neighbor.color == cell.color && !visited.contains(neighbor))
             {
-                if(path(neighbor, visited)) 
+                if(path(neighbor, visited))
                 {
                     return true;
                 }

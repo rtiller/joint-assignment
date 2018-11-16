@@ -9,94 +9,110 @@ import java.util.Scanner;
 
 
 public class Maze {
-     
-     Node[][]maze;
-
-   ArrayList<Character> domain;
-
-     int width;
-     int height;
-
-
-
-    private Maze(Node[][] mazeIn, ArrayList<Character> domain) 
+    int width;
+    int height;
+    Node[][]maze;
+    
+        ArrayList<Character> domain;
+    
+    
+    
+    
+    
+    private Maze(Node[][] mazeIn, ArrayList<Character> domain)
     {
-        this.maze = mazeIn;
-        this.domain = domain;
+        
         this.width = mazeIn[0].length;
         this.height = mazeIn.length;
+        this.maze = mazeIn;
+        this.domain = domain;
+        
     }
-
-
-
-    public static Maze createFromInput(Scanner input, int width, int height) 
+    
+    
+    
+    public static Maze createMaze(Scanner input, int width, int height)
     {
-        Node[][] grid = new Node[height][width];
+        Node[][] maze = new Node[height][width];
         ArrayList<Character> domain = new ArrayList<>();
-
-        for(int row=0; row<height; row++) 
+        
+        for (int y = 0; y < height; y++)
         {
             // Extract line of input as array of characters (values/non-value).
             char[] line = input.nextLine().toCharArray();
-
+            
             // Assign objects to grid based on each value/non-value.
-            for(int col=0; col<width; col++) 
+            for (int x = 0; x < width; x++)
             {
-                char cell = line[col];
-
+                char cell = line[x];
+                
                 // If the cell's symbol refers to empty...
-                if(cell == Node.EmptyCell)
+                if (cell == Node.EmptyCell)
                 {
                     // Create empty cell.
-                    grid[row][col] = Node.createEmptyCell(col, row);
+                    maze[y][x] = Node.createEmptyCell(x, y);
                     // Otherwise...
-                } 
-                else 
+                }
+                else
                 {
                     // Create source cell and add value to domain if not already included.
-                    grid[row][col] = Node.createSourceCell(col, row, cell);
-                    if(!domain.contains(cell)) domain.add(cell);
+                    maze[y][x] = Node.createSourceCell(x, y, cell);
+                    if (!domain.contains(cell)) domain.add(cell);
                 }
             }
         }
-
-        for(int x=0; x<width; x++) 
+        
+        for (int x = 0; x < width; x++)
         {
-            for(int y=0; y<height; y++) 
+            for (int y = 0; y < height; y++)
             {
-                Node cell = grid[y][x];
+                Node cell = maze[y][x];
                 // Add neighbors of cell, if exist...
-                if(x-1 >= 0)        cell.addNeighbor(grid[y][x-1]);
-                if(x+1 <= width-1)  cell.addNeighbor(grid[y][x+1]);
-                if(y-1 >= 0)        cell.addNeighbor(grid[y-1][x]);
-                if(y+1 <= height-1) cell.addNeighbor(grid[y+1][x]);
+                if (x - 1 >= 0) cell.addNeighbor(maze[y][x-1]);
+                if (x + 1 <= width - 1) cell.addNeighbor(maze[y][x+1]);
+                if (y - 1 >= 0) cell.addNeighbor(maze[y-1][x]);
+                if (y + 1 <= height - 1) cell.addNeighbor(maze[y+1][x]);
             }
         }
-
+        
         // Now update domains
-        for(int i=0; i<width; i++) 
+        for (int x = 0; x < width; x++)
         {
-            for(int j=0; j<height; j++) 
+            for (int y = 0; y < height; y++)
             {
-                Node cell = grid[j][i];
-                if(!cell.visited) cell.updateDomain(domain);
+                Node cell = maze[y][x];
+                if (!cell.visited) cell.updateDomain(domain);
             }
         }
-        return new Maze(grid, domain);
+        return new Maze(maze, domain);
     }
-
-    public Node coordinates(int x, int y) 
+    
+    
+    public Node getNode(int x, int y) { return this.maze[y][x]; }
+    
+    
+    public void printMaze()
     {
-        return this.maze[y][x];
-    }
-
-    public boolean completed() 
-    {
-        for(int i=0; i<width; i++) 
+        for (int i = 0; i < maze.length; i++)
         {
-            for(int j=0; j<height; j++) 
+            Node[] row = maze[i];
+            for (int j = 0; j < row.length; j++)
             {
-                if(!coordinates(i, j).visited) 
+                Node node = row[j];
+                System.out.print(node.color);
+            }
+            System.out.println();
+        }
+    }
+    
+    
+    public boolean isFilled()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (getNode(x, y).visited == false)
                 {
                     return false;
                 }
@@ -104,21 +120,7 @@ public class Maze {
         }
         return true;
     }
-
-    public String toString() 
-    {
-        StringBuilder builder = new StringBuilder();
-        // Append each character onto the builder, with new lines for each row.
-        for(Node[] row: maze) 
-        {
-            for(Node cell: row) 
-            {
-                builder.append(cell.color);
-            }
-            builder.append("\n");
-        }
-        return builder.toString();
-    }
-
-
+    
+    
+    
 }
